@@ -1,10 +1,16 @@
-module Slate.Common.Db exposing (DbConnectionInfo)
+module Slate.Common.Db
+    exposing
+        ( DbConnectionInfo
+        , makeComparable
+        )
 
 {-|
     Slate Entity module
 
-@docs DbConnectionInfo
+@docs DbConnectionInfo, makeComparable
 -}
+
+import Utils.Record as Record
 
 
 {-|
@@ -18,3 +24,15 @@ type alias DbConnectionInfo =
     , password : String
     , timeout : Int
     }
+
+
+{-| make connection info comparable for Dictionaries
+-}
+makeComparable : DbConnectionInfo -> String
+makeComparable =
+    Record.makeComparable
+        [ .host
+        , toString << .port_
+        , .database
+        , .user
+        ]

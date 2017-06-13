@@ -18,7 +18,8 @@ module Slate.Common.Event
         , toBool
         , fromBool
         , eventRecordDecoder
-        , encodeMutatingEvent
+        , eventDecoder
+        , encodeEvent
         , getConvertedValue
         , getIntValue
         , getFloatValue
@@ -40,7 +41,7 @@ module Slate.Common.Event
 {-|
     Slate Event module
 
-@docs RelationshipId , Value , OldPosition , NewPosition , Position, Target, Operation, EventRecord , Event, MutatingEvent, NonMutatingEvent, EventType, EntityEventTypes, InitiatorId, Metadata, toBool, fromBool, eventRecordDecoder, encodeMutatingEvent, getConvertedValue, getIntValue, getFloatValue, getDateValue, getBoolValue, getStringValue, getEntityName, getEntityId, getPropertyName, getTarget, getOperation, getRelationshipId, getPosition, getPropertyId, getInitiatorId, getCommand
+@docs RelationshipId , Value , OldPosition , NewPosition , Position, Target, Operation, EventRecord , Event, MutatingEvent, NonMutatingEvent, EventType, EntityEventTypes, InitiatorId, Metadata, toBool, fromBool, eventRecordDecoder, eventDecoder, encodeEvent, getConvertedValue, getIntValue, getFloatValue, getDateValue, getBoolValue, getStringValue, getEntityName, getEntityId, getPropertyName, getTarget, getOperation, getRelationshipId, getPosition, getPropertyId, getInitiatorId, getCommand
 -}
 
 import Tuple exposing (..)
@@ -212,8 +213,8 @@ eventRecordDecoder =
 {-|
     Event encoder.
 -}
-encodeMutatingEvent : Event -> String
-encodeMutatingEvent event =
+encodeEvent : Event -> String
+encodeEvent event =
     let
         crash error =
             Debug.crash ("Program bug:" +-+ error)
@@ -482,7 +483,7 @@ getEntityId event =
 {-|
     Get Property name from event.
 -}
-getPropertyName : Event -> Result String EntityId
+getPropertyName : Event -> Result String PropertyName
 getPropertyName event =
     let
         errorResult =
@@ -531,7 +532,7 @@ getPropertyName event =
 {-|
     Get Target of event, i.e. Entity, Property, PropertyList, Relationship, RelationshipList.
 -}
-getTarget : Event -> Result String EntityId
+getTarget : Event -> Result String Target
 getTarget event =
     case event of
         Mutating mutatingEventData _ ->
@@ -579,7 +580,7 @@ getTarget event =
 {-|
     Get Operation of event, e.g. created, destroyed, added, removed, positioned.
 -}
-getOperation : Event -> Result String EntityId
+getOperation : Event -> Result String Operation
 getOperation event =
     case event of
         Mutating mutatingEventData _ ->
@@ -627,7 +628,7 @@ getOperation event =
 {-|
     Get Relationship from event.
 -}
-getRelationshipId : Event -> Result String EntityId
+getRelationshipId : Event -> Result String RelationshipId
 getRelationshipId event =
     let
         errorResult =
@@ -735,6 +736,8 @@ getMetadata event =
             metadata
 
 
+{-| Event decoder
+-}
 eventDecoder : JD.Decoder Event
 eventDecoder =
     (JD.field "target" JD.string)
