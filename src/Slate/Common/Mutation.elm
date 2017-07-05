@@ -52,13 +52,13 @@ type alias MutationId =
 {-| Signature for mutate function
 -}
 type alias MutateFunction entityFragment =
-    Event -> entityFragment -> Result String (Maybe entityFragment)
+    EventRecord -> entityFragment -> Result String (Maybe entityFragment)
 
 
 {-| Signature for cascading delete mutate function
 -}
 type alias MutateCascadingDeleteFunction entityFragment =
-    Event -> entityFragment -> ( Result String (Maybe entityFragment), Maybe CascadingDelete )
+    EventRecord -> entityFragment -> ( Result String (Maybe entityFragment), Maybe CascadingDelete )
 
 
 {-| Mutation tagger.
@@ -344,9 +344,9 @@ positionRelationshipList =
 
 {-| Mutate Entire Entity Dictionary based on an event.
 -}
-handleMutation : entityFragment -> MutateFunction entityFragment -> EntityDict entityFragment -> Event -> Result String (EntityDict entityFragment)
-handleMutation entireEntityShell mutate dict event =
-    (getEntityId event)
+handleMutation : entityFragment -> MutateFunction entityFragment -> EntityDict entityFragment -> EventRecord -> Result String (EntityDict entityFragment)
+handleMutation entireEntityShell mutate dict eventRecord =
+    (getEntityId eventRecord.event)
         |??>
             (\entityId ->
                 let
@@ -354,7 +354,7 @@ handleMutation entireEntityShell mutate dict event =
                         Dict.get entityId dict
                             ?= entireEntityShell
                 in
-                    (mutate event entity)
+                    (mutate eventRecord entity)
                         |??>
                             (\maybeAddress ->
                                 maybeAddress |?> (\address -> Dict.insert entityId address dict) ?= Dict.remove entityId dict
@@ -365,9 +365,9 @@ handleMutation entireEntityShell mutate dict event =
 
 {-| Mutate Entire Entity Dictionary based on an event with CascadingDelete support.
 -}
-handleMutationCascadingDelete : entityFragment -> MutateCascadingDeleteFunction entityFragment -> EntityDict entityFragment -> Event -> Result String ( EntityDict entityFragment, Maybe CascadingDelete )
-handleMutationCascadingDelete entireEntityShell mutate dict event =
-    (getEntityId event)
+handleMutationCascadingDelete : entityFragment -> MutateCascadingDeleteFunction entityFragment -> EntityDict entityFragment -> EventRecord -> Result String ( EntityDict entityFragment, Maybe CascadingDelete )
+handleMutationCascadingDelete entireEntityShell mutate dict eventRecord =
+    (getEntityId eventRecord.event)
         |??>
             (\entityId ->
                 let
@@ -376,7 +376,7 @@ handleMutationCascadingDelete entireEntityShell mutate dict event =
                             ?= entireEntityShell
 
                     ( mutationResult, maybeDelete ) =
-                        mutate event entity
+                        mutate eventRecord entity
                 in
                     mutationResult
                         |??>

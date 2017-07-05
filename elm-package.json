@@ -1,5 +1,5 @@
 {
-    "version": "2.0.0",
+    "version": "3.0.0",
     "summary": "Common Slate modules",
     "repository": "https://github.com/elm-slate/common.git",
     "license": "Unlicense",
@@ -15,6 +15,7 @@
         "Slate.Common.Query",
         "Slate.Common.Relationship",
         "Slate.Common.Schema",
+        "Slate.Common.StateMachine",
         "Slate.Common.Taggers"
     ],
     "dependencies": {

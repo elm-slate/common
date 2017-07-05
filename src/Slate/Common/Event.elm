@@ -136,9 +136,9 @@ type MutatingEvent
     | AddPropertyList EntityName EntityId PropertyName PropertyId Value
     | RemovePropertyList EntityName EntityId PropertyName PropertyId
     | PositionPropertyList EntityName EntityId PropertyName Position
-    | AddRelationship EntityName EntityId PropertyName EntityId
+    | AddRelationship EntityName EntityId PropertyName RelationshipId
     | RemoveRelationship EntityName EntityId PropertyName
-    | AddRelationshipList EntityName EntityId PropertyName PropertyId EntityId
+    | AddRelationshipList EntityName EntityId PropertyName PropertyId RelationshipId
     | RemoveRelationshipList EntityName EntityId PropertyName PropertyId
     | PositionRelationshipList EntityName EntityId PropertyName Position
 

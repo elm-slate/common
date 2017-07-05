@@ -51,12 +51,12 @@ getEntityNameAndEventTypes schema =
 getPropertyEventTypes : PropertySchema -> List EventType
 getPropertyEventTypes schema =
     case schema of
-        SinglePropertySchema propertyName ->
+        SinglePropertySchema propertyName _ ->
             [ ( "property", "added", Just propertyName )
             , ( "property", "removed", Just propertyName )
             ]
 
-        MultiplePropertySchema propertyName ->
+        MultiplePropertySchema propertyName _ ->
             [ ( "propertyList", "added", Just propertyName )
             , ( "propertyList", "removed", Just propertyName )
             , ( "propertyList", "positioned", Just propertyName )
