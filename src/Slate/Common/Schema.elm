@@ -8,6 +8,7 @@ module Slate.Common.Schema
         , noValidationSingleProperty
         , valueValidationOnlySingleProperty
         , changeValidationOnlySingleProperty
+        , noValidationMultipleProperty
         , mtEntitySchema
         , getPropertySchema
         , getPropertyName
@@ -19,12 +20,12 @@ module Slate.Common.Schema
         , isPropertyRelationship
         )
 
-{-|
-    Slate Schema module.
+{-| Slate Schema module.
 
     Slate entity schemas are defined using this module.
 
-@docs EntitySchema  , PropertySchema , ValueValidator, ChangeValidator, partialSchemaEncoder, noValidationSingleProperty, valueValidationOnlySingleProperty , changeValidationOnlySingleProperty, mtEntitySchema, getPropertySchema, getPropertyName, getPropertyEntitySchema, getValueValidator , getChangeValidator,isPropertyOwned, isPropertyMultiple, isPropertyRelationship
+@docs EntitySchema , PropertySchema , ValueValidator, ChangeValidator, partialSchemaEncoder, noValidationSingleProperty, valueValidationOnlySingleProperty , changeValidationOnlySingleProperty, noValidationMultipleProperty, mtEntitySchema, getPropertySchema, getPropertyName, getPropertyEntitySchema, getValueValidator , getChangeValidator,isPropertyOwned, isPropertyMultiple, isPropertyRelationship
+
 -}
 
 import Json.Encode as JE
@@ -35,8 +36,7 @@ import Slate.Common.Event exposing (..)
 -- API
 
 
-{-|
-    Schema for the entity.
+{-| Schema for the entity.
 -}
 type alias EntitySchema =
     { entityName : EntityName
@@ -88,8 +88,14 @@ type alias MultiplePropertyValidator =
     }
 
 
-{-|
-    Schema for entity properties.
+{-| Helper structure for Multiple Properties with no validation
+-}
+noValidationMultipleProperty : MultiplePropertyValidator
+noValidationMultipleProperty =
+    MultiplePropertyValidator Nothing
+
+
+{-| Schema for entity properties.
 -}
 type PropertySchema
     = SinglePropertySchema PropertyName SinglePropertyValidator
@@ -98,8 +104,7 @@ type PropertySchema
     | MultipleRelationshipSchema PropertyName EntitySchema Bool
 
 
-{-|
-    Null entity schema.
+{-| Null entity schema.
 -}
 mtEntitySchema : EntitySchema
 mtEntitySchema =
@@ -117,8 +122,7 @@ getPropertySchema entitySchema propertyName =
         |> List.head
 
 
-{-|
-    Get property name.
+{-| Get property name.
 -}
 getPropertyName : PropertySchema -> String
 getPropertyName schema =
@@ -136,8 +140,7 @@ getPropertyName schema =
             propertyName
 
 
-{-|
-    Get property entity schema.
+{-| Get property entity schema.
 -}
 getPropertyEntitySchema : PropertySchema -> Maybe EntitySchema
 getPropertyEntitySchema schema =
@@ -191,8 +194,7 @@ getChangeValidator schema =
             Nothing
 
 
-{-|
-    Check to see if property is owned.
+{-| Check to see if property is owned.
 -}
 isPropertyOwned : PropertySchema -> Bool
 isPropertyOwned schema =
@@ -210,8 +212,7 @@ isPropertyOwned schema =
             owned
 
 
-{-|
-    Check to see if property has multiple values.
+{-| Check to see if property has multiple values.
 -}
 isPropertyMultiple : PropertySchema -> Bool
 isPropertyMultiple schema =
@@ -229,8 +230,7 @@ isPropertyMultiple schema =
             True
 
 
-{-|
-    Check to see if property is a relationship.
+{-| Check to see if property is a relationship.
 -}
 isPropertyRelationship : PropertySchema -> Bool
 isPropertyRelationship schema =
